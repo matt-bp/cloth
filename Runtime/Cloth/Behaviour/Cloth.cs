@@ -8,7 +8,6 @@ namespace Cloth.Behaviour
     [RequireComponent(typeof(MeshFilter))]
     public class Cloth : MonoBehaviour
     {
-
         private MassSpring _massSpring;
         
         private void Start()
