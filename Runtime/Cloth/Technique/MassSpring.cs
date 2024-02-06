@@ -7,14 +7,13 @@ namespace Cloth.Technique
 {
     public class MassSpring
     {
-        private readonly int[] _triangles;
+        private readonly List<(int, int, int)> _triangles;
         private readonly Vector3[] _vertices;
         private SpringPair[] _stretchSpringPairs;
 
         public MassSpring(int[] triangles, Vector3[] vertices)
         {
-            // Connect vertices with springs
-            _triangles = triangles;
+            _triangles = Triangle.GetTrianglesFromFlatList(triangles.ToList()).ToList();;
             _vertices = vertices;
 
             CreateSpringPairings();
@@ -22,11 +21,14 @@ namespace Cloth.Technique
 
         private void CreateSpringPairings()
         {
-            var triangles = Triangle.GetTrianglesFromFlatList(_triangles.ToList()).ToList();
-            
+            CreateStretchPairings();
+        }
+
+        private void CreateStretchPairings()
+        {
             var pairs = new List<SpringPair>();
             
-            foreach (var triangle in triangles)
+            foreach (var triangle in _triangles)
             {
                 var v1 = _vertices[triangle.Item1];
                 var v2 = _vertices[triangle.Item2];
