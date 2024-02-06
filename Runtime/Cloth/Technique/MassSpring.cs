@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cloth.DataStructures;
+using Cloth.Springs;
 using UnityEngine;
 
 namespace Cloth.Technique
@@ -9,7 +10,8 @@ namespace Cloth.Technique
     {
         private readonly List<(int, int, int)> _triangles;
         private readonly Vector3[] _vertices;
-        private SpringPair[] _stretchSpringPairs;
+        private List<SpringPair> _stretchSpringPairs;
+        private List<SpringPair> _shearSpringPairs;
 
         public MassSpring(int[] triangles, Vector3[] vertices)
         {
@@ -21,41 +23,8 @@ namespace Cloth.Technique
 
         private void CreateSpringPairings()
         {
-            CreateStretchPairings();
-        }
-
-        private void CreateStretchPairings()
-        {
-            var pairs = new List<SpringPair>();
-            
-            foreach (var triangle in _triangles)
-            {
-                var v1 = _vertices[triangle.Item1];
-                var v2 = _vertices[triangle.Item2];
-                var v3 = _vertices[triangle.Item3];
-
-                var v2v1 = (v2 - v1).sqrMagnitude;
-                var v3v2 = (v3 - v2).sqrMagnitude;
-                var v1v3 = (v1 - v3).sqrMagnitude;
-
-                if (v2v1 > v3v2 && v2v1 > v1v3)
-                {
-                    pairs.Add(new SpringPair { firstIndex = triangle.Item2, secondIndex = triangle.Item3 });
-                    pairs.Add(new SpringPair { firstIndex = triangle.Item3, secondIndex = triangle.Item1 });
-                }
-                else if (v3v2 > v2v1 && v3v2 > v1v3)
-                {
-                    pairs.Add(new SpringPair { firstIndex = triangle.Item3, secondIndex = triangle.Item1 });
-                    pairs.Add(new SpringPair { firstIndex = triangle.Item1, secondIndex = triangle.Item2 });
-                }
-                else
-                {
-                    pairs.Add(new SpringPair { firstIndex = triangle.Item1, secondIndex = triangle.Item2 });
-                    pairs.Add(new SpringPair { firstIndex = triangle.Item2, secondIndex = triangle.Item3 });
-                }
-            }
-
-            _stretchSpringPairs = pairs.ToArray();
+            _stretchSpringPairs = SpringPairCreator.CreateStretchSprings(_triangles, _vertices);
+            _shearSpringPairs = SpringPairCreator.GetShearSprings(_triangles, _vertices);
         }
 
         private void ComputePairForces(int first, int second)
@@ -73,6 +42,11 @@ namespace Cloth.Technique
             foreach (var pair in _stretchSpringPairs)
             {
                 Debug.DrawLine(_vertices[pair.firstIndex], _vertices[pair.secondIndex], Color.magenta);
+            }
+            
+            foreach (var pair in _shearSpringPairs)
+            {
+                Debug.DrawLine(_vertices[pair.firstIndex], _vertices[pair.secondIndex], Color.blue);
             }
         }
 

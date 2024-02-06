@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Cloth.DataStructures
+namespace Cloth.Springs
 {
     [Serializable]
     public class SpringPair
