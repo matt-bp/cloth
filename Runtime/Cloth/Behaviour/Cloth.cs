@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Cloth.Mesh;
 using Cloth.Technique;
 using UnityEngine;
 
@@ -8,13 +10,36 @@ namespace Cloth.Behaviour
     [RequireComponent(typeof(MeshFilter))]
     public class Cloth : MonoBehaviour
     {
-        private MassSpring _massSpring;
+        [Header("Simulation Parameters")] [SerializeField]
+        private float k;
+
+        [SerializeField] private float kd;
+        [SerializeField] private float surfaceDensity;
+        [SerializeField] private Vector3 gravity;
+        [SerializeField] private bool doSimulation;
         
+        private MassSpring _massSpring;
+        private MeshFilter _meshFilter;
+
         private void Start()
         {
-            var mesh = GetComponent<MeshFilter>().sharedMesh;
+            _meshFilter = GetComponent<MeshFilter>();
+            var mesh = _meshFilter.sharedMesh;
+            var vertices = mesh.vertices.Select(_meshFilter.gameObject.transform.TransformPoint).ToArray();
 
-            _massSpring = new MassSpring(mesh.triangles, mesh.vertices);
+            _massSpring = new MassSpring(mesh.triangles, vertices, k, kd, surfaceDensity);
+        }
+
+        private void FixedUpdate()
+        {
+            if (!doSimulation) return;
+
+            // Calculate external forces
+            var externalForces = _massSpring.Masses.Select(m => gravity * m).ToArray();
+
+            _massSpring.Step(Time.fixedTime, externalForces);
+
+            MeshUpdater.UpdateMeshes(_meshFilter, null, _massSpring.Positions);
         }
 
         private void OnDrawGizmos()

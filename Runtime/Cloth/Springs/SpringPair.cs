@@ -8,5 +8,6 @@ namespace Cloth.Springs
     {
         [SerializeField] public int firstIndex;
         [SerializeField] public int secondIndex;
+        [SerializeField] public float restLength;
     }
 }
