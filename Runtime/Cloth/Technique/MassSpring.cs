@@ -41,8 +41,8 @@ namespace Cloth.Technique
 
         public void Step(float dt, Vector3[] externalForces)
         {
-            // ComputeForces();
-            // Pickup here, not working
+            ComputeForces();
+            
             _forces = _forces.Select(x => Vector3.zero).ToArray();
 
             for (var i = 0; i < externalForces.Length; i++)
