@@ -35,8 +35,8 @@ namespace Cloth.Technique
             _velocities = new Vector3[vertices.Length];
             _forces = new Vector3[vertices.Length];
             Masses = massProvider.GetMasses(groupedTriangles, Positions);
-            _stretchSpringPairs = springProvider.CreateStretchSprings(groupedTriangles, Positions);
-            _shearSpringPairs = springProvider.CreateShearSprings(groupedTriangles, Positions);
+            _stretchSpringPairs = springProvider.CreateStretchSprings(groupedTriangles, Positions).Take(1).ToList();
+            _shearSpringPairs = springProvider.CreateShearSprings(groupedTriangles, Positions).Take(0).ToList();
         }
 
         public void Step(float dt, Vector3[] externalForces)

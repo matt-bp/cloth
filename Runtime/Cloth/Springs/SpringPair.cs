@@ -1,9 +1,5 @@
-using System;
-using UnityEngine;
-
 namespace Cloth.Springs
 {
-    // [Serializable]
     public class SpringPair
     {
         public int FirstIndex;
