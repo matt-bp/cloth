@@ -12,6 +12,9 @@ namespace Cloth.UnitTests.Runtime.Cloth.Technique
 {
     public class MassSpringTests
     {
+        /// <summary>
+        /// Test case for Newton's First Law of Motion.
+        /// </summary>
         [Test]
         public void Step_NoExternalForcesAndZeroDt_ReturnsSamePositions()
         {
