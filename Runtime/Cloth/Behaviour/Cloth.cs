@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Cloth.Mesh;
 using Cloth.Provider;
+using Cloth.Springs;
 using Cloth.Technique;
 using UnityEngine;
 
@@ -29,7 +30,8 @@ namespace Cloth.Behaviour
             var vertices = mesh.vertices.Select(_meshFilter.gameObject.transform.TransformPoint).ToArray();
 
             var massProvider = new MassProvider(surfaceDensity);
-            _massSpring = new MassSpring(massProvider, mesh.triangles, vertices, k, kd);
+            var springProvider = new SpringProvider();
+            _massSpring = new MassSpring(massProvider, springProvider, mesh.triangles, vertices, k, kd);
         }
 
         private void FixedUpdate()

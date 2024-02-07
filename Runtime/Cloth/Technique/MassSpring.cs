@@ -16,27 +16,27 @@ namespace Cloth.Technique
 
         private readonly Vector3[] _velocities;
         private Vector3[] _forces;
-        private List<SpringPair> _stretchSpringPairs;
-        private List<SpringPair> _shearSpringPairs;
+        private readonly List<SpringPair> _stretchSpringPairs;
+        private readonly List<SpringPair> _shearSpringPairs;
         public float[] Masses { get; }
 
         private List<int> _constrainedIndices = new();
         private bool IsAnchor(int index) => _constrainedIndices.Contains(index);
 
 
-        public MassSpring(IMassProvider massProvider, int[] triangles, Vector3[] vertices, float k, float kd)
+        public MassSpring(IMassProvider massProvider, ISpringProvider springProvider, int[] triangles, Vector3[] vertices, float k, float kd)
         {
             _k = k;
             _kd = kd;
 
             var groupedTriangles = Triangle.GetTrianglesFromFlatList(triangles.ToList()).ToArray();
+            
             Positions = vertices;
             _velocities = new Vector3[vertices.Length];
             _forces = new Vector3[vertices.Length];
             Masses = massProvider.GetMasses(groupedTriangles, Positions);
-
-            _stretchSpringPairs = SpringPairCreator.CreateStretchSprings(groupedTriangles, Positions);
-            _shearSpringPairs = SpringPairCreator.GetShearSprings(groupedTriangles, Positions);
+            _stretchSpringPairs = springProvider.CreateStretchSprings(groupedTriangles, Positions);
+            _shearSpringPairs = springProvider.CreateShearSprings(groupedTriangles, Positions);
         }
 
         public void Step(float dt, Vector3[] externalForces)
@@ -67,7 +67,7 @@ namespace Cloth.Technique
 
             foreach (var pair in _stretchSpringPairs)
             {
-                ComputeForceForPair(pair.firstIndex, pair.secondIndex, pair.restLength);
+                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength);
             }
         }
         
@@ -94,12 +94,12 @@ namespace Cloth.Technique
         {
             foreach (var pair in _stretchSpringPairs)
             {
-                Debug.DrawLine(Positions[pair.firstIndex], Positions[pair.secondIndex], Color.magenta);
+                Debug.DrawLine(Positions[pair.FirstIndex], Positions[pair.SecondIndex], Color.magenta);
             }
 
             foreach (var pair in _shearSpringPairs)
             {
-                Debug.DrawLine(Positions[pair.firstIndex], Positions[pair.secondIndex], Color.blue);
+                Debug.DrawLine(Positions[pair.FirstIndex], Positions[pair.SecondIndex], Color.blue);
             }
         }
 

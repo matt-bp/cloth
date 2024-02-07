@@ -6,9 +6,15 @@ using UnityEngine;
 
 namespace Cloth.Springs
 {
-    public static class SpringPairCreator
+    public interface ISpringProvider
     {
-        public static List<SpringPair> CreateStretchSprings((int, int, int)[] triangles, Vector3[] vertices)
+        List<SpringPair> CreateStretchSprings(IEnumerable<(int, int, int)> triangles, Vector3[] vertices);
+        public List<SpringPair> CreateShearSprings(IEnumerable<(int, int, int)> triangles, Vector3[] vertices);
+    }
+    
+    public class SpringProvider : ISpringProvider
+    {
+        public List<SpringPair> CreateStretchSprings(IEnumerable<(int, int, int)> triangles, Vector3[] vertices)
         {
             var pairs = new List<SpringPair>();
 
@@ -25,34 +31,34 @@ namespace Cloth.Springs
                 if (edge1 > edge2 && edge1 > edge3)
                 {
                     pairs.Add(new SpringPair
-                        { firstIndex = triangle.Item2, secondIndex = triangle.Item3, restLength = edge2 });
+                        { FirstIndex = triangle.Item2, SecondIndex = triangle.Item3, RestLength = edge2 });
                     pairs.Add(new SpringPair
-                        { firstIndex = triangle.Item3, secondIndex = triangle.Item1, restLength = edge3 });
+                        { FirstIndex = triangle.Item3, SecondIndex = triangle.Item1, RestLength = edge3 });
                 }
                 else if (edge2 > edge1 && edge2 > edge3)
                 {
                     pairs.Add(new SpringPair
-                        { firstIndex = triangle.Item3, secondIndex = triangle.Item1, restLength = edge3 });
+                        { FirstIndex = triangle.Item3, SecondIndex = triangle.Item1, RestLength = edge3 });
                     pairs.Add(new SpringPair
-                        { firstIndex = triangle.Item1, secondIndex = triangle.Item2, restLength = edge1 });
+                        { FirstIndex = triangle.Item1, SecondIndex = triangle.Item2, RestLength = edge1 });
                 }
                 else
                 {
                     pairs.Add(new SpringPair
-                        { firstIndex = triangle.Item1, secondIndex = triangle.Item2, restLength = edge1 });
+                        { FirstIndex = triangle.Item1, SecondIndex = triangle.Item2, RestLength = edge1 });
                     pairs.Add(new SpringPair
-                        { firstIndex = triangle.Item2, secondIndex = triangle.Item3, restLength = edge2 });
+                        { FirstIndex = triangle.Item2, SecondIndex = triangle.Item3, RestLength = edge2 });
                 }
             }
 
             return pairs;
         }
 
-        public static List<SpringPair> GetShearSprings((int, int, int)[] triangles, Vector3[] vertices)
+        public List<SpringPair> CreateShearSprings(IEnumerable<(int, int, int)> triangles, Vector3[] vertices)
         {
             var pairs = new List<SpringPair>();
 
-            var trianglePairs = TrianglePair.MakeFromSharedEdges(triangles.ToList());
+            var trianglePairs = Quad.MakeFromSharedEdges(triangles.ToList());
 
             Debug.Log($"Num pairs: {trianglePairs.Count}");
 
@@ -64,9 +70,9 @@ namespace Cloth.Springs
                 if (Math.Abs(sharedEdge - oppositeEdge) < 0.000001f)
                 {
                     pairs.Add(new SpringPair
-                        { firstIndex = pair.Item2, secondIndex = pair.Item3, restLength = sharedEdge });
+                        { FirstIndex = pair.Item2, SecondIndex = pair.Item3, RestLength = sharedEdge });
                     pairs.Add(new SpringPair
-                        { firstIndex = pair.Item1, secondIndex = pair.Item4, restLength = oppositeEdge });
+                        { FirstIndex = pair.Item1, SecondIndex = pair.Item4, RestLength = oppositeEdge });
                 }
             }
 

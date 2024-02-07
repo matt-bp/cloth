@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Cloth.DataStructures
 {
-    public static class TrianglePair
+    public static class Quad
     {
-        public static List<(int, int, int, int)> MakeFromSharedEdges(List<(int, int, int)> triangles)
+        public static List<(int, int, int, int)> MakeFromSharedEdges(IEnumerable<(int, int, int)> triangles)
         {
             var quads = new List<(int, int, int, int)>();
 
             var previousEdges = new Dictionary<(int, int), int>();
 
-            foreach(var triangle in triangles)
+            foreach (var triangle in triangles)
             {
                 Console.WriteLine("New triangle: " + string.Join(',', triangle));
 
@@ -20,7 +20,8 @@ namespace Cloth.DataStructures
                 var edge2 = (triangle.Item3, triangle.Item1);
 
                 Console.WriteLine("\tChecking for: " + edge0);
-                if (previousEdges.ContainsKey(edge0)) {
+                if (previousEdges.ContainsKey(edge0))
+                {
                     Console.WriteLine("\t\tFound it!");
                     var otherIndex = previousEdges[edge0];
                     quads.Add((triangle.Item3, triangle.Item1, triangle.Item2, otherIndex));
@@ -32,7 +33,8 @@ namespace Cloth.DataStructures
                 }
 
                 Console.WriteLine("\tChecking for: " + edge1);
-                if (previousEdges.ContainsKey(edge1)) {
+                if (previousEdges.ContainsKey(edge1))
+                {
                     Console.WriteLine("\t\tFound it!");
                     var otherIndex = previousEdges[edge1];
                     quads.Add((triangle.Item1, triangle.Item2, triangle.Item3, otherIndex));
@@ -44,7 +46,8 @@ namespace Cloth.DataStructures
                 }
 
                 Console.WriteLine("\tChecking for: " + edge2);
-                if (previousEdges.ContainsKey(edge2)) {
+                if (previousEdges.ContainsKey(edge2))
+                {
                     Console.WriteLine("\t\tFound it!");
                     var otherIndex = previousEdges[edge2];
                     quads.Add((triangle.Item2, triangle.Item3, triangle.Item1, otherIndex));

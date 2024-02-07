@@ -122,7 +122,7 @@ namespace Cloth.Behaviour
 
             foreach (var pair in springs)
             {
-                ComputeForceForPair(pair.firstIndex, pair.secondIndex, pair.restLength);
+                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength);
             }
         }
 
