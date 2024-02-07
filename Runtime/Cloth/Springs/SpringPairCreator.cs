@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cloth.DataStructures;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace Cloth.Springs
 {
     public static class SpringPairCreator
     {
-        public static List<SpringPair> CreateStretchSprings(List<(int, int, int)> triangles, Vector3[] vertices)
+        public static List<SpringPair> CreateStretchSprings((int, int, int)[] triangles, Vector3[] vertices)
         {
             var pairs = new List<SpringPair>();
 
@@ -47,11 +48,11 @@ namespace Cloth.Springs
             return pairs;
         }
 
-        public static List<SpringPair> GetShearSprings(List<(int, int, int)> triangles, Vector3[] vertices)
+        public static List<SpringPair> GetShearSprings((int, int, int)[] triangles, Vector3[] vertices)
         {
             var pairs = new List<SpringPair>();
 
-            var trianglePairs = TrianglePair.MakeFromSharedEdges(triangles);
+            var trianglePairs = TrianglePair.MakeFromSharedEdges(triangles.ToList());
 
             Debug.Log($"Num pairs: {trianglePairs.Count}");
 

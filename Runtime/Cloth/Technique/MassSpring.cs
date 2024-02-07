@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cloth.DataStructures;
+using Cloth.Provider;
 using Cloth.Springs;
 using UnityEngine;
 
@@ -11,7 +12,6 @@ namespace Cloth.Technique
         private readonly float _k;
         private readonly float _kd;
 
-        private readonly List<(int, int, int)> _triangles;
         public Vector3[] Positions { get; }
 
         private readonly Vector3[] _velocities;
@@ -24,19 +24,19 @@ namespace Cloth.Technique
         private bool IsAnchor(int index) => _constrainedIndices.Contains(index);
 
 
-        public MassSpring(int[] triangles, Vector3[] vertices, float k, float kd, float surfaceDensity)
+        public MassSpring(IMassProvider massProvider, int[] triangles, Vector3[] vertices, float k, float kd)
         {
             _k = k;
             _kd = kd;
 
-            _triangles = Triangle.GetTrianglesFromFlatList(triangles.ToList()).ToList();
+            var groupedTriangles = Triangle.GetTrianglesFromFlatList(triangles.ToList()).ToArray();
             Positions = vertices;
             _velocities = new Vector3[vertices.Length];
             _forces = new Vector3[vertices.Length];
-            Masses = DataStructures.Cloth.GetMasses(_triangles, Positions, surfaceDensity);
+            Masses = massProvider.GetMasses(groupedTriangles, Positions);
 
-            _stretchSpringPairs = SpringPairCreator.CreateStretchSprings(_triangles, Positions);
-            _shearSpringPairs = SpringPairCreator.GetShearSprings(_triangles, Positions);
+            _stretchSpringPairs = SpringPairCreator.CreateStretchSprings(groupedTriangles, Positions);
+            _shearSpringPairs = SpringPairCreator.GetShearSprings(groupedTriangles, Positions);
         }
 
         public void Step(float dt, Vector3[] externalForces)
