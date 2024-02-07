@@ -10,7 +10,6 @@ namespace Cloth.Technique
     {
         private readonly float _k;
         private readonly float _kd;
-        private readonly float _surfaceDensity;
 
         private readonly List<(int, int, int)> _triangles;
         public Vector3[] Positions { get; }
@@ -29,16 +28,15 @@ namespace Cloth.Technique
         {
             _k = k;
             _kd = kd;
-            _surfaceDensity = surfaceDensity;
 
             _triangles = Triangle.GetTrianglesFromFlatList(triangles.ToList()).ToList();
-            ;
             Positions = vertices;
             _velocities = new Vector3[vertices.Length];
             _forces = new Vector3[vertices.Length];
-            Masses = GetMasses();
+            Masses = DataStructures.Cloth.GetMasses(_triangles, Positions, surfaceDensity);
 
-            CreateSpringPairings();
+            _stretchSpringPairs = SpringPairCreator.CreateStretchSprings(_triangles, Positions);
+            _shearSpringPairs = SpringPairCreator.GetShearSprings(_triangles, Positions);
         }
 
         public void Step(float dt, Vector3[] externalForces)
@@ -88,27 +86,6 @@ namespace Cloth.Technique
             {
                 _forces[second] += springForce - dampingForce;
             }
-        }
-        
-        private float[] GetMasses()
-        {
-            float GetArea((int, int, int) triangle)
-            {
-                var v1 = Positions[triangle.Item1];
-                var v2 = Positions[triangle.Item1];
-                var v3 = Positions[triangle.Item1];
-                return Triangle.GetArea(v1, v2, v3);
-            }
-
-            var totalArea = _triangles.Sum(GetArea);
-            var totalMass = _surfaceDensity * totalArea;
-            return Enumerable.Range(0, Positions.Length).Select(_ => totalMass / Positions.Length).ToArray();
-        }
-
-        private void CreateSpringPairings()
-        {
-            _stretchSpringPairs = SpringPairCreator.CreateStretchSprings(_triangles, Positions);
-            _shearSpringPairs = SpringPairCreator.GetShearSprings(_triangles, Positions);
         }
 
         #region Gizmos

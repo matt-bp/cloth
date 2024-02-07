@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cloth.DataStructures
 {
-    public class TrianglePair
+    public static class TrianglePair
     {
         public static List<(int, int, int, int)> MakeFromSharedEdges(List<(int, int, int)> triangles)
         {
