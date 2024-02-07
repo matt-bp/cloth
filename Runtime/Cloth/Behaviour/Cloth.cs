@@ -19,7 +19,7 @@ namespace Cloth.Behaviour
         [SerializeField] private float surfaceDensity;
         [SerializeField] private Vector3 gravity;
         [SerializeField] private bool doSimulation;
-        
+
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
 
@@ -32,6 +32,7 @@ namespace Cloth.Behaviour
             var massProvider = new MassProvider(surfaceDensity);
             var springProvider = new SpringProvider();
             _massSpring = new MassSpring(massProvider, springProvider, mesh.triangles, vertices, k, kd);
+            _massSpring.ConstrainedIndices.AddRange(new[] { 0, 2, 3, 4, 5 });
         }
 
         private void FixedUpdate()

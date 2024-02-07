@@ -20,9 +20,8 @@ namespace Cloth.Technique
         private readonly List<SpringPair> _shearSpringPairs;
         public float[] Masses { get; }
 
-        private List<int> _constrainedIndices = new();
-        private bool IsAnchor(int index) => _constrainedIndices.Contains(index);
-
+        public readonly List<int> ConstrainedIndices = new();
+        private bool IsAnchor(int index) => ConstrainedIndices.Contains(index);
 
         public MassSpring(IMassProvider massProvider, ISpringProvider springProvider, int[] triangles, Vector3[] vertices, float k, float kd)
         {
@@ -41,7 +40,7 @@ namespace Cloth.Technique
 
         public void Step(float dt, Vector3[] externalForces)
         {
-            ComputeForces();
+            // ComputeForces();
             
             _forces = _forces.Select(x => Vector3.zero).ToArray();
 
