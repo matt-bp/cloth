@@ -20,5 +20,19 @@ namespace Cloth.UnitTests.Runtime.Cloth.DataStructures
             
             Assert.That(area, Is.EqualTo(0.5f).Within(0.000001));
         }
+        
+        [Test]
+        public void GetTrianglesFromFlatList_WithTwoTriangles_ReturnsThoseGrouped()
+        {
+            var indices = new List<int>()
+            {
+                1, 2, 3, 4, 5, 6
+            };
+
+            var result = Triangle.GetTrianglesFromFlatList(indices).ToList();
+            
+            Assert.That(result, Contains.Item((1, 2, 3)));
+            Assert.That(result, Contains.Item((4, 5, 6)));
+        }
     }
 }
