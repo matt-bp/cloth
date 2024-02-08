@@ -32,7 +32,7 @@ namespace Cloth.Behaviour
             var massProvider = new MassProvider(surfaceDensity);
             var springProvider = new SpringProvider();
             _massSpring = new MassSpring(massProvider, springProvider, mesh.triangles, vertices, k, kd);
-            _massSpring.ConstrainedIndices.AddRange(new[] { 0, 2, 3, 4, 5 });
+            _massSpring.ConstrainedIndices.AddRange(new[] { 0, 5 });
         }
 
         private void FixedUpdate()
