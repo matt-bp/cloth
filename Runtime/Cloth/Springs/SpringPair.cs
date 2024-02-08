@@ -1,3 +1,5 @@
+using System;
+
 namespace Cloth.Springs
 {
     public class SpringPair
@@ -13,13 +15,12 @@ namespace Cloth.Springs
 
         public override bool Equals(object obj)
         {
-            bool IsEqual(SpringPair other)
-            {
-                return other.FirstIndex == FirstIndex && other.SecondIndex == SecondIndex &&
-                       (other.RestLength - RestLength) < 0.00001;
-            }
+            return obj is not SpringPair pair ? base.Equals(obj) : Equals(pair);
+        }
 
-            return obj is not SpringPair pair ? base.Equals(obj) : IsEqual(pair);
+        private bool Equals(SpringPair other)
+        {
+            return FirstIndex == other.FirstIndex && SecondIndex == other.SecondIndex && (other.RestLength - RestLength) < 0.00001;
         }
     }
 }

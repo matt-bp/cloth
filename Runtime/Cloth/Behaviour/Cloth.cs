@@ -19,6 +19,7 @@ namespace Cloth.Behaviour
         [SerializeField] private float surfaceDensity;
         [SerializeField] private Vector3 gravity;
         [SerializeField] private bool doSimulation;
+        [SerializeField] private int numberOfSubsteps;
 
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
@@ -42,7 +43,12 @@ namespace Cloth.Behaviour
             // Calculate external forces
             var externalForces = _massSpring.Masses.Select(m => gravity * m).ToArray();
 
-            _massSpring.Step(Time.fixedDeltaTime, externalForces);
+            var subStepTime = Time.fixedDeltaTime / numberOfSubsteps;
+
+            for (var i = 0; i < numberOfSubsteps; i++)
+            {
+                _massSpring.Step(subStepTime, externalForces);
+            }
 
             MeshUpdater.UpdateMeshes(_meshFilter, null, _massSpring.Positions);
         }
@@ -50,6 +56,11 @@ namespace Cloth.Behaviour
         private void OnDrawGizmos()
         {
             _massSpring?.OnDrawGizmos();
+        }
+
+        public void ToggleSimulation()
+        {
+            doSimulation = !doSimulation;
         }
     }
 }
