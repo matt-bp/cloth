@@ -11,6 +11,7 @@ namespace Cloth.Technique
     {
         private readonly float _k;
         private readonly float _kd;
+        public (int K, int Kd) ShearSpringSettings = (4, 1);
 
         public Vector3[] Positions { get; }
 
@@ -23,13 +24,14 @@ namespace Cloth.Technique
         public readonly List<int> ConstrainedIndices = new();
         private bool IsAnchor(int index) => ConstrainedIndices.Contains(index);
 
-        public MassSpring(IMassProvider massProvider, ISpringProvider springProvider, int[] triangles, Vector3[] vertices, float k, float kd)
+        public MassSpring(IMassProvider massProvider, ISpringProvider springProvider, int[] triangles,
+            Vector3[] vertices, float k, float kd)
         {
             _k = k;
             _kd = kd;
 
             var groupedTriangles = Triangle.GetTrianglesFromFlatList(triangles.ToList()).ToArray();
-            
+
             Positions = vertices;
             _velocities = new Vector3[vertices.Length];
             _forces = new Vector3[vertices.Length];
@@ -41,7 +43,7 @@ namespace Cloth.Technique
         public void Step(float dt, Vector3[] externalForces)
         {
             ResetForces();
-            
+
             ComputeForces();
 
             for (var i = 0; i < externalForces.Length; i++)
@@ -69,15 +71,21 @@ namespace Cloth.Technique
         {
             foreach (var pair in _stretchSpringPairs)
             {
-                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength);
+                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, _k, _kd);
+            }
+
+            foreach (var pair in _shearSpringPairs)
+            {
+                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, ShearSpringSettings.K,
+                    ShearSpringSettings.Kd);
             }
         }
-        
-        private void ComputeForceForPair(int first, int second, float restLength)
-        {
-            var springForce = Forces.GetSpringForce(Positions[first], Positions[second], _k, restLength);
 
-            var dampingForce = Forces.GetDampingForce(_velocities[first], _velocities[second], _kd);
+        private void ComputeForceForPair(int first, int second, float restLength, float k, float kd)
+        {
+            var springForce = Forces.GetSpringForce(Positions[first], Positions[second], k, restLength);
+
+            var dampingForce = Forces.GetDampingForce(_velocities[first], _velocities[second], kd);
 
             if (!IsAnchor(first))
             {
