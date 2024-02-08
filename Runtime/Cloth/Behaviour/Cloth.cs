@@ -42,7 +42,7 @@ namespace Cloth.Behaviour
             // Calculate external forces
             var externalForces = _massSpring.Masses.Select(m => gravity * m).ToArray();
 
-            _massSpring.Step(Time.fixedTime, externalForces);
+            _massSpring.Step(Time.fixedDeltaTime, externalForces);
 
             MeshUpdater.UpdateMeshes(_meshFilter, null, _massSpring.Positions);
         }

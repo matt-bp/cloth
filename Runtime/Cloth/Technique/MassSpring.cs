@@ -40,9 +40,9 @@ namespace Cloth.Technique
 
         public void Step(float dt, Vector3[] externalForces)
         {
-            // ComputeForces();
+            ResetForces();
             
-            _forces = _forces.Select(x => Vector3.zero).ToArray();
+            ComputeForces();
 
             for (var i = 0; i < externalForces.Length; i++)
             {
@@ -60,10 +60,13 @@ namespace Cloth.Technique
             }
         }
 
-        private void ComputeForces()
+        private void ResetForces()
         {
             _forces = _forces.Select(x => Vector3.zero).ToArray();
+        }
 
+        private void ComputeForces()
+        {
             foreach (var pair in _stretchSpringPairs)
             {
                 ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength);
