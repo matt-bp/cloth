@@ -20,7 +20,8 @@ namespace Cloth.Behaviour
         [SerializeField] private Vector3 gravity;
         [SerializeField] private bool doSimulation;
         [SerializeField] private int numberOfSubsteps;
-
+        [SerializeField] private int[] constrainedIndices;
+        
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
 
@@ -33,7 +34,7 @@ namespace Cloth.Behaviour
             var massProvider = new MassProvider(surfaceDensity);
             var springProvider = new SpringProvider();
             _massSpring = new MassSpring(massProvider, springProvider, mesh.triangles, vertices, k, kd);
-            _massSpring.ConstrainedIndices.AddRange(new[] { 0, 5 });
+            _massSpring.ConstrainedIndices.AddRange(constrainedIndices);
         }
 
         private void FixedUpdate()
@@ -56,11 +57,28 @@ namespace Cloth.Behaviour
         private void OnDrawGizmos()
         {
             _massSpring?.OnDrawGizmos();
+
+            if (_massSpring == null)
+            {
+                return;
+            }
+
+            foreach (var index in constrainedIndices)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(_massSpring.Positions[index], 0.2f);
+            }
         }
 
         public void ToggleSimulation()
         {
             doSimulation = !doSimulation;
+
+            if (doSimulation)
+            {
+                // I update these just since they're visualized at runtime, and you can edit them at runtime.
+                _massSpring.ConstrainedIndices.AddRange(constrainedIndices);
+            }
         }
     }
 }

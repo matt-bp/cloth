@@ -11,7 +11,7 @@ namespace Cloth.Technique
     {
         private readonly float _k;
         private readonly float _kd;
-        public (int K, int Kd) ShearSpringSettings = (4, 1);
+        // public (int K, int Kd) ShearSpringSettings = (4, 1);
 
         public Vector3[] Positions { get; }
 
@@ -76,8 +76,7 @@ namespace Cloth.Technique
 
             foreach (var pair in _shearSpringPairs)
             {
-                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, ShearSpringSettings.K,
-                    ShearSpringSettings.Kd);
+                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, _k, _kd);
             }
         }
 

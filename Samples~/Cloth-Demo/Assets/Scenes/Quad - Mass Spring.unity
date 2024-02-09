@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -156,11 +156,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8719248709708816096, guid: 6b4ae96c43485b74d9b9b8dde94d7c54, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 0.9563303
       objectReference: {fileID: 0}
     - target: {fileID: 8719248709708816096, guid: 6b4ae96c43485b74d9b9b8dde94d7c54, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: -0.29228827
       objectReference: {fileID: 0}
     - target: {fileID: 8719248709708816096, guid: 6b4ae96c43485b74d9b9b8dde94d7c54, type: 3}
       propertyPath: m_LocalRotation.y
@@ -172,7 +172,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8719248709708816096, guid: 6b4ae96c43485b74d9b9b8dde94d7c54, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+      value: -33.99
       objectReference: {fileID: 0}
     - target: {fileID: 8719248709708816096, guid: 6b4ae96c43485b74d9b9b8dde94d7c54, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -201,12 +201,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cbd6801560b43cca4dd04c85b76a9a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  k: 4
-  kd: 1
-  surfaceDensity: 2
-  gravity: {x: 0, y: -1, z: 0}
+  k: 60
+  kd: 10
+  surfaceDensity: 1
+  gravity: {x: 0, y: -10, z: 0}
   doSimulation: 0
   numberOfSubsteps: 4
+  constrainedIndices: 0200000031000000
 --- !u!1 &370110410
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,9 +308,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: babe54fa9ced4690832c416574fc9e68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Start: {x: -10.233939, y: 0, z: 1.4642702}
-  m_End: {x: 10, y: 0, z: 0}
-  m_Speed: 0.2
 --- !u!65 &390662210
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1074,3 +1072,4 @@ MonoBehaviour:
   gravity: {x: 0, y: -1, z: 0}
   doSimulation: 0
   numberOfSubsteps: 1
+  constrainedIndices: 
