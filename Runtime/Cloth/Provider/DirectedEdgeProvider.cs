@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cloth.DataStructures;
 using UnityEngine;
 
@@ -48,7 +50,18 @@ namespace Cloth.Provider
 
         public static List<DirectedEdge> DuplicateAndReverse(List<DirectedEdge> toBeDuplicated)
         {
-            return new List<DirectedEdge>();
+            var all = toBeDuplicated;
+            
+            var reversed = toBeDuplicated.Select(t => new DirectedEdge
+            {
+                Start = t.End,
+                End = t.Start,
+                Edge = -t.Edge
+            }).ToList();
+
+            all.AddRange(reversed);
+
+            return all;
         }
     }
 }

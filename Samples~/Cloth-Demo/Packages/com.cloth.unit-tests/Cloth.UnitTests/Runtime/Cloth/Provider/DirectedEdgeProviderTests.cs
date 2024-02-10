@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Cloth.DataStructures;
 using Cloth.Provider;
 using NUnit.Framework;
@@ -48,6 +49,20 @@ namespace Cloth.UnitTests.Runtime.Cloth.Provider
             
             edges[0].Should().BeEquivalentTo(new DirectedEdge { Start = 1, End = 2, Edge = Vector3.down });
             edges[1].Should().BeEquivalentTo(new DirectedEdge { Start = 2, End = 3, Edge = Vector3.left });
+        }
+
+        [Test]
+        public void DuplicateAndReverse_One_ReturnsThatAndReversed()
+        {
+            var list = new List<DirectedEdge>
+            {
+                new(start: 1, end: 3, edge: Vector3.up)
+            };
+
+            var all = DirectedEdgeProvider.DuplicateAndReverse(list);
+            
+            all[0].Should().BeEquivalentTo(new DirectedEdge(start: 1, end: 3, edge: Vector3.up));
+            all[1].Should().BeEquivalentTo(new DirectedEdge(start: 3, end: 1, edge: Vector3.down));
         }
     }
 }
