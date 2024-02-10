@@ -201,13 +201,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cbd6801560b43cca4dd04c85b76a9a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  k: 60
-  kd: 10
-  surfaceDensity: 1
+  stretchK: 60
+  stretchKd: 10
+  shearK: 20
+  shearKd: 5
+  bendK: 2
+  bendKd: 5
+  surfaceDensity: 2
   gravity: {x: 0, y: -10, z: 0}
   doSimulation: 0
   numberOfSubsteps: 4
-  constrainedIndices: 0200000031000000
+  constrainedIndices: 02000000310000001e00000014000000
 --- !u!1 &370110410
 GameObject:
   m_ObjectHideFlags: 0
@@ -1066,8 +1070,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cbd6801560b43cca4dd04c85b76a9a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  k: 4
-  kd: 1
+  stretchK: 0
+  stretchKd: 0
+  shearK: 0
+  shearKd: 0
+  bendK: 0
+  bendKd: 0
   surfaceDensity: 2
   gravity: {x: 0, y: -1, z: 0}
   doSimulation: 0

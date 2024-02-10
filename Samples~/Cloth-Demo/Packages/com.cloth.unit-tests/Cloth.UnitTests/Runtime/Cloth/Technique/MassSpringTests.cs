@@ -40,7 +40,7 @@ namespace Cloth.UnitTests.Runtime.Cloth.Technique
                 });
             stubSpringProvider.CreateShearSprings(AnyTriangleArray(), AnyVectorArray())
                 .Returns(Enumerable.Empty<SpringPair>().ToList());
-            var massSpring = new MassSpring(stubMassProvider, stubSpringProvider, triangles, vertices, 4, 1);
+            var massSpring = new MassSpring(stubMassProvider, stubSpringProvider, triangles, vertices);
 
             massSpring.Step(0, Array.Empty<Vector3>());
 

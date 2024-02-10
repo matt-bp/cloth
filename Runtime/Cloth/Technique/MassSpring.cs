@@ -3,15 +3,20 @@ using System.Linq;
 using Cloth.DataStructures;
 using Cloth.Provider;
 using Cloth.Springs;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.VirtualTexturing;
 
 namespace Cloth.Technique
 {
     public class MassSpring
     {
-        private readonly float _k;
-        private readonly float _kd;
-        // public (int K, int Kd) ShearSpringSettings = (4, 1);
+        public float StretchK = 60;
+        public float StretchKd = 10;
+        public float ShearK = 60;
+        public float ShearKd = 10;
+        public float BendK = 10;
+        public float BendKd = 5;
 
         public Vector3[] Positions { get; }
 
@@ -19,17 +24,15 @@ namespace Cloth.Technique
         private Vector3[] _forces;
         private readonly List<SpringPair> _stretchSpringPairs;
         private readonly List<SpringPair> _shearSpringPairs;
+        private readonly List<SpringPair> _bendSpringPairs;
         public float[] Masses { get; }
 
-        public readonly List<int> ConstrainedIndices = new();
+        public List<int> ConstrainedIndices = new();
         private bool IsAnchor(int index) => ConstrainedIndices.Contains(index);
 
         public MassSpring(IMassProvider massProvider, ISpringProvider springProvider, int[] triangles,
-            Vector3[] vertices, float k, float kd)
+            Vector3[] vertices)
         {
-            _k = k;
-            _kd = kd;
-
             var groupedTriangles = Triangle.GetTrianglesFromFlatList(triangles.ToList()).ToArray();
 
             Positions = vertices;
@@ -38,6 +41,7 @@ namespace Cloth.Technique
             Masses = massProvider.GetMasses(groupedTriangles, Positions);
             _stretchSpringPairs = springProvider.CreateStretchSprings(groupedTriangles, Positions);
             _shearSpringPairs = springProvider.CreateShearSprings(groupedTriangles, Positions);
+            _bendSpringPairs = springProvider.CreateBendSprings(groupedTriangles, Positions);
         }
 
         public void Step(float dt, Vector3[] externalForces)
@@ -71,12 +75,17 @@ namespace Cloth.Technique
         {
             foreach (var pair in _stretchSpringPairs)
             {
-                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, _k, _kd);
+                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, StretchK, StretchKd);
             }
 
             foreach (var pair in _shearSpringPairs)
             {
-                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, _k, _kd);
+                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, ShearK, ShearKd);
+            }
+
+            foreach (var pair in _bendSpringPairs)
+            {
+                ComputeForceForPair(pair.FirstIndex, pair.SecondIndex, pair.RestLength, BendK, BendKd);
             }
         }
 
@@ -109,6 +118,11 @@ namespace Cloth.Technique
             foreach (var pair in _shearSpringPairs)
             {
                 Debug.DrawLine(Positions[pair.FirstIndex], Positions[pair.SecondIndex], Color.blue);
+            }
+
+            foreach (var pair in _bendSpringPairs)
+            {
+                Debug.DrawLine(Positions[pair.FirstIndex], Positions[pair.SecondIndex], Color.yellow);
             }
         }
 

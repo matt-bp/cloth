@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Cloth.Mesh;
 using Cloth.Provider;
@@ -12,16 +11,20 @@ namespace Cloth.Behaviour
     [RequireComponent(typeof(MeshFilter))]
     public class Cloth : MonoBehaviour
     {
-        [Header("Simulation Parameters")] [SerializeField]
-        private float k;
+        [Header("Simulation Parameters XX")] [SerializeField]
+        private float stretchK;
 
-        [SerializeField] private float kd;
+        [SerializeField] private float stretchKd;
+        [SerializeField] private float shearK;
+        [SerializeField] private float shearKd;
+        [SerializeField] private float bendK;
+        [SerializeField] private float bendKd;
         [SerializeField] private float surfaceDensity;
         [SerializeField] private Vector3 gravity;
         [SerializeField] private bool doSimulation;
         [SerializeField] private int numberOfSubsteps;
         [SerializeField] private int[] constrainedIndices;
-        
+
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
 
@@ -33,7 +36,7 @@ namespace Cloth.Behaviour
 
             var massProvider = new MassProvider(surfaceDensity);
             var springProvider = new SpringProvider();
-            _massSpring = new MassSpring(massProvider, springProvider, mesh.triangles, vertices, k, kd);
+            _massSpring = new MassSpring(massProvider, springProvider, mesh.triangles, vertices);
             _massSpring.ConstrainedIndices.AddRange(constrainedIndices);
         }
 
@@ -74,10 +77,17 @@ namespace Cloth.Behaviour
         {
             doSimulation = !doSimulation;
 
-            if (doSimulation)
+            if (doSimulation && _massSpring != null)
             {
+                _massSpring.StretchK = stretchK;
+                _massSpring.StretchKd = stretchKd;
+                _massSpring.ShearK = shearK;
+                _massSpring.ShearKd = shearKd;
+                _massSpring.BendK = bendK;
+                _massSpring.BendKd = bendKd;
+                
                 // I update these just since they're visualized at runtime, and you can edit them at runtime.
-                _massSpring.ConstrainedIndices.AddRange(constrainedIndices);
+                _massSpring.ConstrainedIndices = constrainedIndices.ToList();
             }
         }
     }

@@ -11,6 +11,7 @@ namespace Cloth.Springs
     {
         List<SpringPair> CreateStretchSprings(IEnumerable<(int, int, int)> triangles, Vector3[] vertices);
         public List<SpringPair> CreateShearSprings(IEnumerable<(int, int, int)> triangles, Vector3[] vertices);
+        public List<SpringPair> CreateBendSprings(IEnumerable<(int, int, int)> triangles, Vector3[] vertices);
     }
     
     public class SpringProvider : ISpringProvider
