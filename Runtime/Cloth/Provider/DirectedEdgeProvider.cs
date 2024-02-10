@@ -16,9 +16,9 @@ namespace Cloth.Provider
             var edge2 = v3 - v2;
             var edge3 = v1 - v3;
 
-            var edge1Mag = edge1.magnitude;
-            var edge2Mag = edge2.magnitude;
-            var edge3Mag = edge3.magnitude;
+            var edge1Mag = edge1.sqrMagnitude;
+            var edge2Mag = edge2.sqrMagnitude;
+            var edge3Mag = edge3.sqrMagnitude;
 
             if (edge1Mag > edge2Mag && edge1Mag > edge3Mag)
             {
