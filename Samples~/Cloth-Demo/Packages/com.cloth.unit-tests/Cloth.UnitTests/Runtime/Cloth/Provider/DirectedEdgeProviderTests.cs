@@ -35,5 +35,19 @@ namespace Cloth.UnitTests.Runtime.Cloth.Provider
             edges.Item1.Should().BeEquivalentTo(new DirectedEdge { Start = 3, End = 1, Edge = Vector3.down });
             edges.Item2.Should().BeEquivalentTo(new DirectedEdge { Start = 1, End = 2, Edge = Vector3.left });
         }
+
+        [Test]
+        public void GetEdgesFromTriangle_With90OnPoint2_ReturnsEdgesConnectedToPoint2()
+        {
+            var triangle = (1, 2, 3);
+            var v1 = Vector3.up;
+            var v2 = Vector3.zero;
+            var v3 = Vector3.left;
+            
+            var edges = DirectedEdgeProvider.GetEdgesFromTriangle(triangle, v1, v2, v3);
+            
+            edges.Item1.Should().BeEquivalentTo(new DirectedEdge { Start = 1, End = 2, Edge = Vector3.down });
+            edges.Item2.Should().BeEquivalentTo(new DirectedEdge { Start = 2, End = 3, Edge = Vector3.left });
+        }
     }
 }

@@ -22,20 +22,16 @@ namespace Cloth.Provider
                 return (new DirectedEdge { Start = triangle.Item2, End = triangle.Item3, Edge = edge2 },
                     new DirectedEdge { Start = triangle.Item3, End = triangle.Item1, Edge = edge3 });
             }
-            // else if (edge2 > edge1 && edge2 > edge3)
-            else
+
+            if (edge2Mag > edge1Mag && edge2Mag > edge3Mag)
             {
                 // v1 is in the middle
                 return (new DirectedEdge { Start = triangle.Item3, End = triangle.Item1, Edge = edge3 },
                     new DirectedEdge { Start = triangle.Item1, End = triangle.Item2, Edge = edge1 });
             }
-            // else
-            // {
-            //     pairs.Add(new SpringPair
-            //         { FirstIndex = triangle.Item1, SecondIndex = triangle.Item2, RestLength = edge1 });
-            //     pairs.Add(new SpringPair
-            //         { FirstIndex = triangle.Item2, SecondIndex = triangle.Item3, RestLength = edge2 });
-            // }
+
+            return (new DirectedEdge { Start = triangle.Item1, End = triangle.Item2, Edge = edge1 },
+                new DirectedEdge { Start = triangle.Item2, End = triangle.Item3, Edge = edge2 });
         }
     }
 }
