@@ -18,8 +18,8 @@ namespace Cloth.UnitTests.Runtime.Cloth.Provider
 
             var edges = DirectedEdgeProvider.GetEdgesFromTriangle(triangle, v1, v2, v3);
 
-            edges.Item1.Should().BeEquivalentTo(new DirectedEdge { Start = 2, End = 3, Edge = Vector3.down });
-            edges.Item2.Should().BeEquivalentTo(new DirectedEdge { Start = 3, End = 1, Edge = Vector3.left });
+            edges[0].Should().BeEquivalentTo(new DirectedEdge { Start = 2, End = 3, Edge = Vector3.down });
+            edges[1].Should().BeEquivalentTo(new DirectedEdge { Start = 3, End = 1, Edge = Vector3.left });
         }
 
         [Test]
@@ -31,9 +31,9 @@ namespace Cloth.UnitTests.Runtime.Cloth.Provider
             var v3 = Vector3.up;
             
             var edges = DirectedEdgeProvider.GetEdgesFromTriangle(triangle, v1, v2, v3);
-            
-            edges.Item1.Should().BeEquivalentTo(new DirectedEdge { Start = 3, End = 1, Edge = Vector3.down });
-            edges.Item2.Should().BeEquivalentTo(new DirectedEdge { Start = 1, End = 2, Edge = Vector3.left });
+
+            edges[0].Should().BeEquivalentTo(new DirectedEdge { Start = 3, End = 1, Edge = Vector3.down });
+            edges[1].Should().BeEquivalentTo(new DirectedEdge { Start = 1, End = 2, Edge = Vector3.left });
         }
 
         [Test]
@@ -46,8 +46,8 @@ namespace Cloth.UnitTests.Runtime.Cloth.Provider
             
             var edges = DirectedEdgeProvider.GetEdgesFromTriangle(triangle, v1, v2, v3);
             
-            edges.Item1.Should().BeEquivalentTo(new DirectedEdge { Start = 1, End = 2, Edge = Vector3.down });
-            edges.Item2.Should().BeEquivalentTo(new DirectedEdge { Start = 2, End = 3, Edge = Vector3.left });
+            edges[0].Should().BeEquivalentTo(new DirectedEdge { Start = 1, End = 2, Edge = Vector3.down });
+            edges[1].Should().BeEquivalentTo(new DirectedEdge { Start = 2, End = 3, Edge = Vector3.left });
         }
     }
 }
