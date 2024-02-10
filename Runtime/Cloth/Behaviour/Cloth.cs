@@ -8,6 +8,7 @@ using Cloth.Technique;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Cloth.Behaviour
 {
@@ -15,7 +16,7 @@ namespace Cloth.Behaviour
     [RequireComponent(typeof(MeshFilter))]
     public class Cloth : MonoBehaviour
     {
-        [Header("Simulation Parameters XX")] [SerializeField]
+        [Header("Cloth Parameters")] [SerializeField]
         private float stretchK;
 
         [SerializeField] private float stretchKd;
@@ -25,12 +26,18 @@ namespace Cloth.Behaviour
         [SerializeField] private float bendKd;
         [SerializeField] private float surfaceDensity;
         [SerializeField] private Vector3 gravity;
+        
+        [Header("Simulation Settings")]
         [SerializeField] private bool doSimulation;
         [SerializeField] private int numberOfSubsteps;
-        [SerializeField] private TMP_Text statusLabel;
         [SerializeField] private float cutoffAverage;
         [SerializeField] private bool relaxationMode;
         [SerializeField] private int[] constrainedIndices;
+        
+        [Header("View")]
+        [SerializeField] private TMP_Text statusLabel;
+
+        [SerializeField] private UnityEvent onDone;
 
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
@@ -74,6 +81,8 @@ namespace Cloth.Behaviour
                 statusLabel.color = Color.green;
                 Debug.Log("Done!");
                 doSimulation = false;
+                
+                onDone.Invoke();
             }
 
             MeshUpdater.UpdateMeshes(_meshFilter, null, _massSpring.Positions);

@@ -211,10 +211,13 @@ MonoBehaviour:
   gravity: {x: 0, y: -10, z: 0}
   doSimulation: 0
   numberOfSubsteps: 4
-  statusLabel: {fileID: 822249770}
   cutoffAverage: 0.003
   relaxationMode: 0
   constrainedIndices: 02000000310000001e000000
+  statusLabel: {fileID: 822249770}
+  onDone:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &370110410
 GameObject:
   m_ObjectHideFlags: 0
@@ -1109,7 +1112,10 @@ MonoBehaviour:
   gravity: {x: 0, y: -1, z: 0}
   doSimulation: 0
   numberOfSubsteps: 1
-  statusLabel: {fileID: 0}
   cutoffAverage: 0
   relaxationMode: 0
   constrainedIndices: 
+  statusLabel: {fileID: 0}
+  onDone:
+    m_PersistentCalls:
+      m_Calls: []
