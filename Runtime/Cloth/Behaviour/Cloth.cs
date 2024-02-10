@@ -60,7 +60,7 @@ namespace Cloth.Behaviour
                 _massSpring.Step(subStepTime, externalForces);
             }
 
-            if (_simulationState.IsDone(_massSpring.Positions, cutoffAverage))
+            if (_simulationState.IsDone(_massSpring.Positions, cutoffAverage, Time.fixedDeltaTime))
             {
                 statusLabel.text = "Done!";
                 statusLabel.color = Color.green;
@@ -114,9 +114,12 @@ namespace Cloth.Behaviour
         private class SimulationState
         {
             [CanBeNull] private List<Vector3> _previousPositions;
+            private float _elapsed;
             
-            public bool IsDone(Vector3[] positions, float cutoff)
+            public bool IsDone(Vector3[] positions, float cutoff, float dt)
             {
+                _elapsed += dt;
+                
                 if (_previousPositions == null)
                 {
                     _previousPositions = positions.Select(s => s).ToList();
@@ -128,7 +131,7 @@ namespace Cloth.Behaviour
             
                 // Debug.Log($"Stats: Avg {differences.Average()}, Min {differences.Min()}, Max {differences.Max()}");
 
-                return differences.Average() < cutoff;
+                return differences.Average() < cutoff && _elapsed > 0.5f;
             }
         }
     }
