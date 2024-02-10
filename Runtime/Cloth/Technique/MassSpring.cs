@@ -20,7 +20,7 @@ namespace Cloth.Technique
 
         public Vector3[] Positions { get; }
 
-        private readonly Vector3[] _velocities;
+        private Vector3[] _velocities;
         private Vector3[] _forces;
         private readonly List<SpringPair> _stretchSpringPairs;
         private readonly List<SpringPair> _shearSpringPairs;
@@ -68,7 +68,15 @@ namespace Cloth.Technique
 
         private void ResetForces()
         {
-            _forces = _forces.Select(x => Vector3.zero).ToArray();
+            _forces = new Vector3[_forces.Length];;
+        }
+
+        /// <summary>
+        /// This is used in the cloth relaxation mode to only have each frames internal cloth forces move the cloth.
+        /// </summary>
+        public void ResetVelocities()
+        {
+            _velocities = new Vector3[_velocities.Length];
         }
 
         private void ComputeForces()

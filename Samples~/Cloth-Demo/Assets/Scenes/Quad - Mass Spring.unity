@@ -207,13 +207,14 @@ MonoBehaviour:
   shearKd: 5
   bendK: 2
   bendKd: 5
-  surfaceDensity: 2
+  surfaceDensity: 1
   gravity: {x: 0, y: -10, z: 0}
   doSimulation: 0
   numberOfSubsteps: 4
-  constrainedIndices: 02000000310000001e00000014000000
   statusLabel: {fileID: 822249770}
   cutoffAverage: 0.003
+  relaxationMode: 0
+  constrainedIndices: 02000000310000001e000000
 --- !u!1 &370110410
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +491,7 @@ GameObject:
   - component: {fileID: 822249771}
   - component: {fileID: 822249770}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Status
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1108,6 +1109,7 @@ MonoBehaviour:
   gravity: {x: 0, y: -1, z: 0}
   doSimulation: 0
   numberOfSubsteps: 1
-  constrainedIndices: 
   statusLabel: {fileID: 0}
   cutoffAverage: 0
+  relaxationMode: 0
+  constrainedIndices: 

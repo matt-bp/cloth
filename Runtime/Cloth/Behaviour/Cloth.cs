@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cloth.Mesh;
@@ -26,9 +27,10 @@ namespace Cloth.Behaviour
         [SerializeField] private Vector3 gravity;
         [SerializeField] private bool doSimulation;
         [SerializeField] private int numberOfSubsteps;
-        [SerializeField] private int[] constrainedIndices;
         [SerializeField] private TMP_Text statusLabel;
         [SerializeField] private float cutoffAverage;
+        [SerializeField] private bool relaxationMode;
+        [SerializeField] private int[] constrainedIndices;
 
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
@@ -49,15 +51,21 @@ namespace Cloth.Behaviour
         private void FixedUpdate()
         {
             if (!doSimulation) return;
-
-            // Calculate external forces
-            var externalForces = _massSpring.Masses.Select(m => gravity * m).ToArray();
+            
+            var externalForces = relaxationMode ? 
+                Array.Empty<Vector3>() : 
+                _massSpring.Masses.Select(m => gravity * m).ToArray();
 
             var subStepTime = Time.fixedDeltaTime / numberOfSubsteps;
 
             for (var i = 0; i < numberOfSubsteps; i++)
             {
                 _massSpring.Step(subStepTime, externalForces);
+
+                if (relaxationMode)
+                {
+                    _massSpring.ResetVelocities();
+                }
             }
 
             if (_simulationState.IsDone(_massSpring.Positions, cutoffAverage, Time.fixedDeltaTime))
@@ -131,6 +139,7 @@ namespace Cloth.Behaviour
             
                 // Debug.Log($"Stats: Avg {differences.Average()}, Min {differences.Min()}, Max {differences.Max()}");
 
+                // Including time just in case the first few frames have really small movements.
                 return differences.Average() < cutoff && _elapsed > 0.5f;
             }
         }
