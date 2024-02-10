@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using System.Linq;
 using Cloth.Mesh;
 using Cloth.Provider;
 using Cloth.Springs;
 using Cloth.Technique;
+using JetBrains.Annotations;
+using TMPro;
 using UnityEngine;
 
 namespace Cloth.Behaviour
@@ -24,9 +27,12 @@ namespace Cloth.Behaviour
         [SerializeField] private bool doSimulation;
         [SerializeField] private int numberOfSubsteps;
         [SerializeField] private int[] constrainedIndices;
+        [SerializeField] private TMP_Text statusLabel;
+        [SerializeField] private float cutoffAverage;
 
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
+        private readonly SimulationState _simulationState = new();
 
         private void Start()
         {
@@ -54,6 +60,14 @@ namespace Cloth.Behaviour
                 _massSpring.Step(subStepTime, externalForces);
             }
 
+            if (_simulationState.IsDone(_massSpring.Positions, cutoffAverage))
+            {
+                statusLabel.text = "Done!";
+                statusLabel.color = Color.green;
+                Debug.Log("Done!");
+                doSimulation = false;
+            }
+
             MeshUpdater.UpdateMeshes(_meshFilter, null, _massSpring.Positions);
         }
 
@@ -77,6 +91,12 @@ namespace Cloth.Behaviour
         {
             doSimulation = !doSimulation;
 
+            if (statusLabel)
+            {
+                statusLabel.text = doSimulation ? "Going" : "Stopped";
+                statusLabel.color = Color.red;
+            }
+
             if (doSimulation && _massSpring != null)
             {
                 _massSpring.StretchK = stretchK;
@@ -88,6 +108,27 @@ namespace Cloth.Behaviour
                 
                 // I update these just since they're visualized at runtime, and you can edit them at runtime.
                 _massSpring.ConstrainedIndices = constrainedIndices.ToList();
+            }
+        }
+
+        private class SimulationState
+        {
+            [CanBeNull] private List<Vector3> _previousPositions;
+            
+            public bool IsDone(Vector3[] positions, float cutoff)
+            {
+                if (_previousPositions == null)
+                {
+                    _previousPositions = positions.Select(s => s).ToList();
+                    return false;
+                }
+                
+                var differences = _previousPositions.Zip(positions, Vector3.Distance).ToList();
+                _previousPositions = positions.Select(s => s).ToList();
+            
+                // Debug.Log($"Stats: Avg {differences.Average()}, Min {differences.Min()}, Max {differences.Max()}");
+
+                return differences.Average() < cutoff;
             }
         }
     }
