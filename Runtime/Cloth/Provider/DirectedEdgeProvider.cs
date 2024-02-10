@@ -48,7 +48,7 @@ namespace Cloth.Provider
             };
         }
 
-        public static List<DirectedEdge> DuplicateAndReverse(List<DirectedEdge> toBeDuplicated)
+        public static List<DirectedEdge> DuplicateAndReverse(this List<DirectedEdge> toBeDuplicated)
         {
             var all = toBeDuplicated;
             

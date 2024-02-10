@@ -59,7 +59,7 @@ namespace Cloth.UnitTests.Runtime.Cloth.Provider
                 new() { Start = 1, End = 3, Edge = Vector3.up}
             };
 
-            var all = DirectedEdgeProvider.DuplicateAndReverse(list);
+            var all = list.DuplicateAndReverse();
             
             all[0].Should().BeEquivalentTo(new DirectedEdge { Start = 1, End = 3, Edge = Vector3.up});
             all[1].Should().BeEquivalentTo(new DirectedEdge { Start = 3, End = 1, Edge = Vector3.down});
