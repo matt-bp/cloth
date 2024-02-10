@@ -78,5 +78,12 @@ namespace Cloth.Springs
 
             return pairs;
         }
+
+        public List<SpringPair> CreateBendSprings(IEnumerable<(int, int, int)> triangles, Vector3[] vertices)
+        {
+            var pairs = new List<SpringPair>();
+
+            return pairs; 
+        }
     }
 }

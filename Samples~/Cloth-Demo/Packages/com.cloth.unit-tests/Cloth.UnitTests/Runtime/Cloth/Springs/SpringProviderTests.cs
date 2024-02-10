@@ -1,4 +1,5 @@
 using Cloth.Springs;
+using FluentAssertions;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -22,9 +23,9 @@ namespace Cloth.UnitTests.Runtime.Cloth.Springs
             var provider = new SpringProvider();
 
             var result = provider.CreateStretchSprings(triangles, positions);
-            
-            Assert.That(result[0], Is.EqualTo(new SpringPair { FirstIndex = 2, SecondIndex = 0, RestLength = 1.0f }));
-            Assert.That(result[1], Is.EqualTo(new SpringPair { FirstIndex = 0, SecondIndex = 1, RestLength = 1.0f }));
+
+            result[0].Should().BeEquivalentTo(new SpringPair { FirstIndex = 2, SecondIndex = 0, RestLength = 1.0f });
+            result[1].Should().BeEquivalentTo(new SpringPair { FirstIndex = 0, SecondIndex = 1, RestLength = 1.0f });
         }
     }
 }
