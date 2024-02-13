@@ -33,7 +33,12 @@ namespace Cloth.Behaviour
         [SerializeField] private float cutoffAverage;
         [SerializeField] private bool relaxationMode;
         [SerializeField] private int[] constrainedIndices;
-        
+        public int[] ConstrainedIndices
+        {
+            get => constrainedIndices;
+            set => constrainedIndices = value;
+        }
+
         [Header("View")]
         [SerializeField] private TMP_Text statusLabel;
 
@@ -123,7 +128,7 @@ namespace Cloth.Behaviour
                 _massSpring.BendK = bendK;
                 _massSpring.BendKd = bendKd;
                 
-                // I update these just since they're visualized at runtime, and you can edit them at runtime.
+                // Update the underlying indices only when we need to
                 _massSpring.ConstrainedIndices = constrainedIndices.ToList();
             }
         }
