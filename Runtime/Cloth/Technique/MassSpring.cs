@@ -1,11 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cloth.DataStructures;
 using Cloth.Provider;
 using Cloth.Springs;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering.VirtualTexturing;
 
 namespace Cloth.Technique
 {
@@ -18,7 +17,7 @@ namespace Cloth.Technique
         public float BendK = 10;
         public float BendKd = 5;
 
-        public Vector3[] Positions { get; }
+        public Vector3[] Positions { get; private set; }
 
         private Vector3[] _velocities;
         private Vector3[] _forces;
@@ -42,6 +41,24 @@ namespace Cloth.Technique
             _stretchSpringPairs = springProvider.CreateStretchSprings(groupedTriangles, Positions);
             _shearSpringPairs = springProvider.CreateShearSprings(groupedTriangles, Positions);
             _bendSpringPairs = springProvider.CreateBendSprings(groupedTriangles, Positions);
+        }
+
+        /// <summary>
+        /// Updates the internal positions of the cloth, and zeros out the cloth's inner velocities and forces.
+        /// </summary>
+        /// <param name="newPositions"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void UpdatePositions(Vector3[] newPositions)
+        {
+            if (newPositions.Length != Positions.Length)
+            {
+                throw new ArgumentException("Position arrays are of different length", nameof(newPositions));
+            }
+
+            Positions = newPositions;
+            // Zero out velocities and forces, since they won't carry over after updating positions.
+            _velocities = new Vector3[Positions.Length];
+            _forces = new Vector3[Positions.Length];
         }
 
         public void Step(float dt, Vector3[] externalForces)

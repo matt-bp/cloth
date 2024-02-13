@@ -128,6 +128,15 @@ namespace Cloth.Behaviour
             }
         }
 
+        public void MatchClothPositionsToMesh()
+        {
+            var mesh = _meshFilter.sharedMesh;
+            var vertices = mesh.vertices.Select(_meshFilter.gameObject.transform.TransformPoint).ToArray();
+            
+            // Don't need to update springs, because they were created based on default cloth position.
+            _massSpring.UpdatePositions(vertices);
+        }
+        
         private class SimulationState
         {
             [CanBeNull] private List<Vector3> _previousPositions;
