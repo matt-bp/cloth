@@ -91,8 +91,12 @@ namespace Cloth.Behaviour
 
             if (relaxationMode && _simulationState.IsDone(_massSpring.Positions, cutoffAverage, maxRelaxationModeSimulationTime, Time.fixedDeltaTime))
             {
-                statusLabel.text = "Done!";
-                statusLabel.color = Color.green;
+                if (statusLabel != null)
+                {
+                    statusLabel.text = "Done!";
+                    statusLabel.color = Color.green;
+                }
+                
                 Debug.Log("Done!");
                 doSimulation = false;
                 
@@ -122,7 +126,7 @@ namespace Cloth.Behaviour
         {
             doSimulation = !doSimulation;
 
-            if (statusLabel)
+            if (statusLabel != null)
             {
                 statusLabel.text = doSimulation ? "Going" : "Stopped";
                 statusLabel.color = Color.red;
