@@ -139,6 +139,8 @@ namespace Cloth.Behaviour
                 
                 // Update the underlying indices only when we need to
                 _massSpring.ConstrainedIndices = constrainedIndices.ToList();
+                
+                _simulationState.Reset();
             }
         }
 
@@ -177,6 +179,12 @@ namespace Cloth.Behaviour
 
                 // Including time just in case the first few frames have really small movements.
                 return differences.Average() < cutoff && _elapsed > 0.5f || maxTime >= 0 && _elapsed > maxTime;
+            }
+
+            public void Reset()
+            {
+                _elapsed = 0.0f;
+                _previousPositions = null;
             }
         }
     }
