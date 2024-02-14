@@ -27,11 +27,17 @@ namespace Cloth.Behaviour
         [SerializeField] private float surfaceDensity;
         [SerializeField] private Vector3 gravity;
         
+        [Header("Relaxation Mode")]
+        [Tooltip("Enables or disables relaxation mode. This mode ignores external velocities, and resets the inner velocities of the cloth each frame.")]
+        [SerializeField] private bool relaxationMode;
+        [Tooltip("Average difference (in meters) between positions updates, that when passed, stops the relaxation mode.")]
+        [SerializeField] private float cutoffAverage;
+        [SerializeField] private float maxRelaxationModeSimulationTime;
+        [SerializeField] private UnityEvent onDone;
+        
         [Header("Simulation Settings")]
         [SerializeField] private bool doSimulation;
         [SerializeField] private int numberOfSubsteps;
-        [SerializeField] private float cutoffAverage;
-        [SerializeField] private bool relaxationMode;
         [SerializeField] private int[] constrainedIndices;
         public int[] ConstrainedIndices
         {
@@ -44,7 +50,6 @@ namespace Cloth.Behaviour
         [Header("View")]
         [SerializeField] private TMP_Text statusLabel;
 
-        [SerializeField] private UnityEvent onDone;
 
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
@@ -84,7 +89,7 @@ namespace Cloth.Behaviour
                 }
             }
 
-            if (_simulationState.IsDone(_massSpring.Positions, cutoffAverage, Time.fixedDeltaTime))
+            if (relaxationMode && _simulationState.IsDone(_massSpring.Positions, cutoffAverage, maxRelaxationModeSimulationTime, Time.fixedDeltaTime))
             {
                 statusLabel.text = "Done!";
                 statusLabel.color = Color.green;
@@ -152,7 +157,7 @@ namespace Cloth.Behaviour
             [CanBeNull] private List<Vector3> _previousPositions;
             private float _elapsed;
             
-            public bool IsDone(Vector3[] positions, float cutoff, float dt)
+            public bool IsDone(Vector3[] positions, float cutoff, float maxTime, float dt)
             {
                 _elapsed += dt;
                 
@@ -171,7 +176,7 @@ namespace Cloth.Behaviour
                 }
 
                 // Including time just in case the first few frames have really small movements.
-                return differences.Average() < cutoff && _elapsed > 0.5f;
+                return differences.Average() < cutoff && _elapsed > 0.5f || maxTime >= 0 && _elapsed > maxTime;
             }
         }
     }
