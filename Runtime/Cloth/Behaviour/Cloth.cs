@@ -39,6 +39,8 @@ namespace Cloth.Behaviour
             set => constrainedIndices = value;
         }
 
+        [Header("Debug")] [SerializeField] private bool showDebugOutput;
+
         [Header("View")]
         [SerializeField] private TMP_Text statusLabel;
 
@@ -63,6 +65,8 @@ namespace Cloth.Behaviour
         private void FixedUpdate()
         {
             if (!doSimulation) return;
+
+            _simulationState.ShowDebugOutput = showDebugOutput;
             
             var externalForces = relaxationMode ? 
                 Array.Empty<Vector3>() : 
@@ -144,6 +148,7 @@ namespace Cloth.Behaviour
         
         private class SimulationState
         {
+            public bool ShowDebugOutput { get; set; }
             [CanBeNull] private List<Vector3> _previousPositions;
             private float _elapsed;
             
@@ -159,8 +164,11 @@ namespace Cloth.Behaviour
                 
                 var differences = _previousPositions.Zip(positions, Vector3.Distance).ToList();
                 _previousPositions = positions.Select(s => s).ToList();
-            
-                // Debug.Log($"Stats: Avg {differences.Average()}, Min {differences.Min()}, Max {differences.Max()}");
+
+                if (ShowDebugOutput)
+                {
+                    Debug.Log($"Stats: Avg {differences.Average()}, Min {differences.Min()}, Max {differences.Max()}");    
+                }
 
                 // Including time just in case the first few frames have really small movements.
                 return differences.Average() < cutoff && _elapsed > 0.5f;
