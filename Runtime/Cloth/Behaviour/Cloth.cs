@@ -13,7 +13,7 @@ using UnityEngine.Events;
 namespace Cloth.Behaviour
 {
     [AddComponentMenu("Matt/Cloth")]
-    [RequireComponent(typeof(MeshFilter))]
+    [RequireComponent(typeof(MeshFilter), typeof(MeshCollider))]
     public class Cloth : MonoBehaviour
     {
         [Header("Cloth Parameters")] [SerializeField]
@@ -53,11 +53,13 @@ namespace Cloth.Behaviour
 
         private MassSpring _massSpring;
         private MeshFilter _meshFilter;
+        private MeshCollider _meshCollider;
         private readonly SimulationState _simulationState = new();
 
         private void Start()
         {
             _meshFilter = GetComponent<MeshFilter>();
+            _meshCollider = GetComponent<MeshCollider>();
             var mesh = _meshFilter.sharedMesh;
             var vertices = mesh.vertices.Select(_meshFilter.gameObject.transform.TransformPoint).ToArray();
 
@@ -103,7 +105,7 @@ namespace Cloth.Behaviour
                 onDone.Invoke();
             }
 
-            MeshUpdater.UpdateMeshes(_meshFilter, null, _massSpring.Positions);
+            MeshUpdater.UpdateMeshes(_meshFilter, _meshCollider, _massSpring.Positions);
         }
 
         private void OnDrawGizmos()
